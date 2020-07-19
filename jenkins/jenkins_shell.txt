@@ -1,0 +1,35 @@
+compose_args=" -f jenkins.yml -p jenkins " > env.properties
+echo $compose_args
+
+sudo docker-compose $compose_args stop
+sudo docker-compose $compose_args rm --force -v
+
+sudo docker-compose $compose_args build --no-cache
+sudo docker-compose $compose_args up -d
+
+sudo docker-compose $compose_args run --no-deps --rm -e ENV=UNIT identidock 
+ERR=$?
+
+if [ $ERR -eq 0 ]; then
+  IP=$(sudo docker inspect -f {{.NetworkSettings.IPAddress}} jenkins_identidock_1)
+  CODE=$(curl -sL -w "%{http_code}" $IP:9090/monster/bla -o /dev/null) || true
+    if [ $CODE -eq 200 ]; then
+        echo "Test passed - Tagging"
+        HASH=$(git rev-parse --short HEAD)
+        sudo docker tag jenkins_identidock ${login}/identidock:$HASH
+        sudo docker tag jenkins_identidock ${login}/identidock:newest
+        echo "Pushing"
+        sudo docker login -u ${login} -p ${pass_p}
+        sudo docker push ${login}/identidock:$HASH
+        sudo docker push ${login}/identidock:newest
+        sudo docker logout
+  else
+    echo "Site returned " $CODE
+    ERR=1
+  fi
+fi
+
+sudo docker-compose $compose_args stop
+sudo docker-compose $compose_args rm --force -v
+
+return $ERR
