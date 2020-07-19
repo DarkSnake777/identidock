@@ -1,4 +1,4 @@
-compose_args=" -f jenkins.yml -p jenkins " > env.properties
+compose_args=" -f identidock/jenkins.yml -p jenkins " > env.properties
 echo $compose_args
 
 sudo docker-compose $compose_args stop
