@@ -1,0 +1,31 @@
+proxy:
+  image: darksnake/identiproxy
+  links:
+    - identidock
+  ports:
+    - "80:80"
+  environment:
+    - NGINX_HOST=192.168.99.100
+    - NGINX_PROXY=http://identidock:9090
+
+identidock:
+  image: darksnake/identidock:1.0
+  environment:
+    ENV: PROD
+  links:
+    - dnmonster
+    - redis
+
+dnmonster:
+  image: amouat/dnmonster:1.0
+
+redis:
+  image: redis:3.0
+
+logspout:
+  image: amouat/logspout-logstash
+  volumes:
+    - /var/run/docker.sock:/tmp/docker.sock
+  ports:
+    - "8000:90"
+
