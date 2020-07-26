@@ -1,5 +1,5 @@
 proxy:
-  image: darksnake/identiproxy
+  image: darksnake/identiproxy:1.0
   links:
     - identidock
   ports:
@@ -25,12 +25,12 @@ redis:
 logspout:
   image: amouat/logspout-logstash
   volumes:
-    - /var/run/docker.sock:/var/run/docker.sock
+    - /var/run/docker.sock:/tmp/docker.sock
   ports:
     - "8000:80"
   links:
     - logstash
-  command: logstash://logstash:5000
+  command: logstash://logstash:5044
 
 logstash:
   image: logstash:7.8.0

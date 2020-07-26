@@ -1,0 +1,65 @@
+Команды Linux 
+touch <имя> - создать файл
+vi - запустить vim
+mv - переместить
+ls -la - список файлов каталога
+sudo apt-get update - обновить список пакетов
+sudo apt-get install -y имя - установить пакеты
+shutdown -h now  - выключить
+chmod +x entrypoint.sh - сделать файл исполняемым
+env - печать переменных окружения
+curl localhost:32768
+ip addr show - информация о сети
+curl ifconfig.me - внешний ip 
+hostname - имя хоста
+"$(pwd)" - полный путь к текущему каталогу
+openssl req -newkey rsa:4096 -nodes -sha256 -keyout registry_certs/domain.key -x509 -days 365 -out registry_certs/domain.crt - создать самоподписанный ssl
+
+
+
+Команды Docker
+docker run -it debian /bin/bash - запустить в интерактивном режиме
+docker run -it 468a4dc15bbb - запустить по имени образа
+docker run --name myredis -d redis  - запустить в фоновом режиме
+docker run --rm -it --link myredis:redis redis /bin/bash - запустить контейнер в интерактивном режиме и связать его с другим контейнером. Т.е. имя хоста существующего контейнера будет redis. Удалить после завершения(rm)
+docker run -h NEWCONTAINER --volumes-from container-test debian /bin/bash - хост NEWCONTAINER данные разделить с контейнером container-test
+docker run -e var2="val 2" -e var1="val1" debian env - переменные окружения 
+docker run -d -p 5000:5000 -v "$(pwd)"/registry_certs:/certs -e REGISTRY_HTTP_TLS_CERTIFICATE=/certs/domain.crt -e REGISTRY_HTTP_TLS_KEY=/certs/domain.key --restart=always --name registry registry:2
+
+docker inspect festive_bose | grep IPAddress - информация о контейнере
+docker inspect -f {{.Mounts}} container-test
+docker diff modest_turing - список измененных файлов в контейнере
+docker logs modest_turing - логи
+ocker history mongo:latest - посмотреть набор слоев для образа
+
+docker rm -v имя - удалить контейнер по имени
+docker rm -v $(docker ps -aq -f status=exited) - удаление остановленных контейнеров
+docker rm $(docker ps -aq) - удалить все контейнеры
+docker rm $(docker stop $(docker ps -q)) - остановить и удалить
+
+docker commit cowsay test/cowsayimage - создать образ из контейнера
+docker build -t test/cowsay-dockerfile . - создать образ из Dockerfile
+docker push darksnake/cowsay:stable - загрузить образ в хранилище образов
+docker pull redis - загрузить образ
+docker rmi $(docker images -q -f dangling=true) - удалить все висячие образы
+docker images - образы
+docker save -o /tmp/redis.tar redis:latest - сохранить образ
+docker load -i /tmp/redis.tar - загрузить ранее сохраненный образ
+docker stop myredis - остановить контейнер
+docker port $ID 
+docker tag fd81e5e359b2 newname - связывает образ с дополнительным новым именем
+
+Команды docker-compose:
+up - запуск
+build - пересоздать все образы из Dockerfile
+ps -инф о контейнерах
+logs - логи
+rm - удалить
+
+Команды vim:
+:w - сохранить
+:x - сохранить и выйти
+ZZ — Сохранить изменения и выйти
+:q! - выйти без сохранения
+ZQ — Выйти без сохранения изменений
+i,a  o - режим ввода с текущей или новой строки 
