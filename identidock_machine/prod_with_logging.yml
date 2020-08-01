@@ -5,7 +5,7 @@ proxy:
   ports:
     - "80:80"
   environment:
-    - NGINX_HOST=127.0.0.1
+    - NGINX_HOST=192.168.0.103
     - NGINX_PROXY=http://identidock:9090
 
 identidock:
@@ -33,9 +33,25 @@ logspout:
   command: logstash://logstash:5044
 
 logstash:
-  image: logstash:7.8.0
-  volumes:
-    - ./logstash.conf:/etc/logstash.conf
+  build: .
   environment:
     LOGSPOUT: ignore
+  links:
+    - elasticsearch
   command: -f /etc/logstash.conf
+
+elasticsearch:
+  image: elasticsearch:7.8.1
+  environment:
+    LOGSPOUT: ignore
+    discovery.type: single-node
+
+kibana:
+  image: kibana:7.8.1
+  environment:
+    LOGSPOUT: ignore
+    ELASTICSEARCH_URL: http://elasticsearch:9200
+  links:
+     - elasticsearch
+  ports:
+    - "5601:5601"  

@@ -56,6 +56,18 @@ ps -инф о контейнерах
 logs - логи
 rm - удалить
 
+Команды docker-machine
+docker-machine create --driver hyperv --hyperv-virtual-switch "pvs"--hyperv-cpu-count 8 --hyperv-disk-size 50000 --hyperv-memory 8096 iden  -создать hyper-v
+docker-machine create --driver virtualbox default - создать
+docker-machine ls - список машин
+docker-machine start identihost.do - запустить/ stop - остановить
+docker-machine env identihost.do - информация о машине 
+eval $(docker-machine.exe env identihost.do) - сконфигурировать выполнение команд на хосте 
+docker-machine rm identihost.do - удалить
+docker-machine ssh iden - коннект к машине
+
+
+
 Команды vim:
 :w - сохранить
 :x - сохранить и выйти
